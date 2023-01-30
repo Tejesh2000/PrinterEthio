@@ -35,7 +35,7 @@ private extension CBPeripheral {
 
 public struct BluetoothPrinter {
 
-    public enum State {
+    enum State {
 
         case disconnected
         case connecting
@@ -44,11 +44,11 @@ public struct BluetoothPrinter {
     }
 
     public let name: String?
-    public let identifier: UUID
+    let identifier: UUID
 
-    public var state: State
+    var state: State
 
-    public var isConnecting: Bool {
+    var isConnecting: Bool {
         return state == .connecting
     }
 
@@ -79,7 +79,6 @@ public extension BluetoothPrinterManager {
 }
 
 public class BluetoothPrinterManager {
-    public var updateHandler: (() -> Void)?
 
     private let queue = DispatchQueue(label: "com.kevin.gong.printer")
 
@@ -88,9 +87,9 @@ public class BluetoothPrinterManager {
     private let centralManagerDelegate = BluetoothCentralManagerDelegate(BluetoothPrinterManager.specifiedServices)
     private let peripheralDelegate = BluetoothPeripheralDelegate(BluetoothPrinterManager.specifiedServices, characteristics: BluetoothPrinterManager.specifiedCharacteristics)
 
-    public weak var delegate: PrinterManagerDelegate?
+    weak var delegate: PrinterManagerDelegate?
 
-    public var errorReport: ((PError) -> ())?
+    var errorReport: ((PError) -> ())?
 
     private var connectTimer: Timer?
 
@@ -179,7 +178,6 @@ public class BluetoothPrinterManager {
     private func nearbyPrinterDidChange(_ change: NearbyPrinterChange) {
         DispatchQueue.main.async { [weak self] in
             self?.delegate?.nearbyPrinterDidChange(change)
-            self?.updateHandler?()
         }
     }
 
@@ -274,14 +272,6 @@ public class BluetoothPrinterManager {
         } else {
             return true
         }
-    }
-    
-    public var printer: BluetoothPrinter? {
-        guard let p = peripheralDelegate.writablePeripheral else {
-            return nil
-        }
-        
-        return BluetoothPrinter(p)
     }
 
     public func print(_ content: ESCPOSCommandsCreator, encoding: String.Encoding = String.GBEncoding.GB_18030_2000, completeBlock: ((PError?) -> ())? = nil) {

@@ -20,7 +20,8 @@ public protocol Attribute {
 
 public struct Block: Printable {
 
-    public static var defaultFeedPoints: UInt8 = 70
+//    public static var defaultFeedPoints: UInt8 = 70
+    public static var defaultFeedPoints: UInt8 = 0
     
     private let feedPoints: UInt8
     private let dataProvider: BlockDataProvider
@@ -53,6 +54,11 @@ public extension Block {
         return Block(Text.title(content))
     }
     
+    // title
+    static func subTitle(_ content: String) -> Block {
+        return Block(Text.subTitle(content))
+    }
+    
     // plain text
     static func plainText(_ content: String) -> Block {
         return Block(Text.init(content))
@@ -63,15 +69,12 @@ public extension Block {
     }
     
     // key    value
-    static func kv(printDensity: Int = 384, fontDensity: Int = 12, k: String, v: String) -> Block {
-        return Block(Text.kv(printDensity: printDensity, fontDensity: fontDensity, k: k, v: v))
+    static func kv(k: String, v: String) -> Block {
+        return Block(Text.kv(k: k, v: v))
     }
     
     // dividing
-    //static var dividing = Block(Dividing.default)
-    static func dividing(provider: Character = Character("-"), printDensity: Int = 384, fontDensity: Int = 12) -> Block {
-        return Block(Dividing.default(provider: provider, printDensity: printDensity, fontDensity: fontDensity))
-    }
+    static var dividing = Block(Dividing.default)
     
     // image
     static func image(_ im: Image, attributes: TicketImage.PredefinedAttribute...) -> Block {
